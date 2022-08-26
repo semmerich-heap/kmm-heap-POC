@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS Session (
+  ID TEXT NOT NULL PRIMARY KEY,
+  platform TEXT
+) ;
+
+CREATE TABLE IF NOT EXISTS Event (
+    ID TEXT NOT NULL PRIMARY KEY,
+    eventText TEXT
+);
+
+insertSession:
+INSERT INTO Session(ID, platform)
+VALUES(?, ?);
+
+insertEvent:
+INSERT INTO Event(ID, eventText)
+VALUES(?, ?);
+
+removeAllSessions:
+DELETE FROM Session;
+
+removeAllEvents:
+DELETE FROM Event;
+
+selectEventById:
+SELECT * FROM Event
+WHERE ID = ?;
+
+selectSessionById:
+SELECT * FROM Session
+WHERE ID = ?;
+
+
+selectAllEventInfo:
+SELECT * FROM Event;
+
