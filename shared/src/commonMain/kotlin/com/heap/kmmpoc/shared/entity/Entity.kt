@@ -5,15 +5,15 @@ import kotlinx.serialization.Serializable
 
 //data class Entity()
 @Serializable
-data class Session(
-    @SerialName("ID")
-    val ID: String,
+data class HSession(
+    @SerialName("SessionID")
+    val SID: String,
     @SerialName("Platform")
     val platform: String
 )
 @Serializable
-data class Event (
-    @SerialName("ID")
+class HEvent (
+    @SerialName("EventID")
     val ID: String,
     @SerialName("EventText")
     val eventText: String

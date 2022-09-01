@@ -13,10 +13,6 @@ import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heap.kmmpoc.shared.cache.DatabaseDriverFactory
-import com.heap.kmmpoc.shared.entity.Event
-import kotlinx.coroutines.cancel
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +45,28 @@ private val rand = Random(42)
         eventsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         progressBarView = findViewById(R.id.progressBar)
+
+        val  sendEB: Button = findViewById(R.id.Send_Events)
+        sendEB.setOnClickListener {
+            mainScope.launch {
+                kotlin.runCatching {
+                    Log.d("HEAP", "sending events")
+
+                    sdk.sendEvents()
+
+                }.onSuccess {
+                    Log.d("HEAP", "successful write")
+
+
+                }.onFailure {
+                    Toast.makeText(this@MainActivity, it.localizedMessage, Toast.LENGTH_SHORT)
+                        .show()
+                    Log.d("HEAP", "successful failed ")
+
+                }
+            }
+            displayEvents()
+        }
         // Buttons
         val seb: Button = findViewById(R.id.Store_Event)
         seb.setOnClickListener{

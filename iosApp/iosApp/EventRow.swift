@@ -11,7 +11,7 @@ import shared
 
 
 struct EventRow: View {
-    var event: Event
+    var event: HEvent
 
     var body: some View {
         HStack() {

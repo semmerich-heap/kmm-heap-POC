@@ -1,7 +1,7 @@
 package com.heap.kmmpoc.shared.cache
 
-import com.heap.kmmpoc.shared.entity.Event
-import com.heap.kmmpoc.shared.entity.Session
+import com.heap.kmmpoc.shared.entity.HEvent
+import com.heap.kmmpoc.shared.entity.HSession
 
 internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = AppDatabase(databaseDriverFactory.createDriver())
@@ -18,32 +18,31 @@ internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
             dbQuery.removeAllEvents()
         }
     }
-    internal  fun getAllEvents(sessionId: String): List<Event> {
-
-        return dbQuery.selectAllEventInfo().executeAsList() as List<Event>
+    internal  fun getAllEvents(sessionId: String?): List<HEvent> {
+        return dbQuery.selectAllEventInfo(::mapEventSelection).executeAsList() as List<HEvent>
     }
 
-    private fun mapEventSelection(ID: String, eventText: String): Event {
-        return Event(
+    private fun mapEventSelection(ID: String, eventText: String?): HEvent {
+        return HEvent(
             ID = ID,
-        eventText = eventText
+        eventText = eventText!!
         )
     }
-    internal fun getSession(id: String): Session {
-        val result = dbQuery.selectSessionById(id).executeAsOneOrNull()
-        return result as Session
+    internal fun getSession(id: String): HSession {
+        val result = dbQuery.selectSessionById(id, ::mapSessionSelecting).executeAsOneOrNull()
+        return result as HSession
     }
 
     private fun mapSessionSelecting(
         ID: String,
-        platform: String
-    ): Session {
-        return Session(
-            ID = ID,
-            platform = platform
+        platform: String?
+    ): HSession {
+        return HSession(
+            SID = ID,
+            platform = platform!!
         )
     }
-    internal fun createEvents(events: List<Event>) {
+    internal fun createEvents(events: List<HEvent>) {
         dbQuery.transaction {
             events.forEach { event ->
                 val eventFromDB = dbQuery.selectEventById(event.ID).executeAsOneOrNull()
@@ -53,7 +52,7 @@ internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
             }
         }
     }
-    internal fun createEvent(event: Event, sessionId: String) {
+    internal fun createEvent(event: HEvent, sessionId: String) {
         dbQuery.transaction {
             val eventFromDB = dbQuery.selectEventById(event.ID).executeAsOneOrNull()
             if (eventFromDB == null) {
@@ -61,9 +60,9 @@ internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
             }
         }
     }
-    internal fun createSession(session: Session) {
+    internal fun createSession(session: HSession) {
         dbQuery.transaction {
-            val sessionFromDB = dbQuery.selectSessionById(session.ID).executeAsOneOrNull()
+            val sessionFromDB = dbQuery.selectSessionById(session.SID).executeAsOneOrNull()
             if  (sessionFromDB == null) {
                 insertSession(session)
             }
@@ -71,16 +70,16 @@ internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    private fun insertEvent(event: Event) {
+    private fun insertEvent(event: HEvent) {
         dbQuery.insertEvent(
             ID = event.ID,
             eventText = event.eventText
         )
     }
 
-    private fun insertSession(session: Session) {
+    private fun insertSession(session: HSession) {
         dbQuery.insertSession(
-            ID = session.ID,
+            ID = session.SID,
             platform = session.platform
         )
     }

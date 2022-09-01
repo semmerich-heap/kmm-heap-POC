@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.heap.kmmpoc.shared.entity.Event
+import com.heap.kmmpoc.shared.entity.HEvent
 
-class EventsRvAdapter(var events: List<Event>) : RecyclerView.Adapter<EventsRvAdapter.EventsViewHolder>() {
+class EventsRvAdapter(var events: List<HEvent>) : RecyclerView.Adapter<EventsRvAdapter.EventsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_event, parent, false)
@@ -25,7 +24,7 @@ class EventsRvAdapter(var events: List<Event>) : RecyclerView.Adapter<EventsRvAd
         private val eventIdTextView = itemView.findViewById<TextView>(R.id.eventId)
 
 
-        fun bindData(event: Event) {
+        fun bindData(event: HEvent) {
             val ctx = itemView.context
             eventIdTextView.text = ctx.getString(R.string.event_id_field, event.ID)
 

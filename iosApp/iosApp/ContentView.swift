@@ -11,7 +11,7 @@ struct ContentView: View {
                 .navigationBarItems(leading: Button("Add") {
                     self.viewModel.addEvent()
                 }, trailing: Button("Send") {
-                    self.viewModel.loadEvents()
+                    self.viewModel.sendEvents()
                 })
         }
 	}
@@ -20,7 +20,8 @@ struct ContentView: View {
         case .loading:
             return AnyView(Text("Loading ...").multilineTextAlignment(.center))
         case .result(let events):
-            return AnyView(List(events) { event in EventRow(event: event)})
+            let resultViewList = List(events) { event in EventRow(event: event)}
+            return AnyView(resultViewList)
         case .error(let description):
             return AnyView(Text(description).multilineTextAlignment(.center))
         }
@@ -29,7 +30,7 @@ struct ContentView: View {
 extension ContentView {
     enum LoadableEvents {
         case loading
-        case result([Event])
+        case result([HEvent])
         case error(String)
     }
     class ViewModel: ObservableObject {
@@ -42,8 +43,12 @@ extension ContentView {
         }
         func addEvent() {
             sdk.sendEvent(id: Int.random(in: 1..<255).description, completionHandler: { error in
-                self.events = .error(error?.localizedDescription ?? "error")
+                if error != nil {
+                    self.events = .error(error?.localizedDescription ?? "error")
+                }
             })
+            self.loadEvents()
+
         }
         func loadEvents() {
             self.events = .loading
@@ -58,7 +63,19 @@ extension ContentView {
 
 
         }
+        func sendEvents () {
+            sdk.sendEvents(completionHandler: { error in
+                if error != nil {
+                    self.events = .error(error?.localizedDescription ?? "error")
+                }
+                
+            })
+            self.loadEvents()
+
+           
+
+        }
     }
 }
 
-extension Event: Identifiable { }
+    extension HEvent: Identifiable { }

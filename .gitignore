@@ -9,3 +9,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+server/
+iosApp/iosApp.xcodeproj/xcuserdata/sdemmer.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
